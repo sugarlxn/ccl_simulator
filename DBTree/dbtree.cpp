@@ -27,6 +27,21 @@ void buildDBT(int k, int rootA, vector<int>& treeA, vector<int>& treeB) {
     bfs(k, rootB, treeB); // 构造Tree B，根节点为 rootB
 }
 
+void bfs_recursive(int k, int root, vector<int>& tree, int pos) {
+    if (pos >= k) return;
+    tree[pos] = (pos + root) % k; // 当前位置对应的 rank
+    bfs_recursive(k, root, tree, 2 * pos + 1); // 左子节点
+    bfs_recursive(k, root, tree, 2 * pos + 2); // 右子节点
+}
+
+void buildDBT_recursive(int k, int rootA, vector<int>& treeA, vector<int>& treeB) {
+    treeA.assign(k, -1);
+    bfs_recursive(k, rootA, treeA, 0); // 构造Tree A，根节点为 rootA
+    int rootB = (rootA + k/2) % k;
+    treeB.assign(k, -1);
+    bfs_recursive(k, rootB, treeB, 0); // 构造Tree B，根节点为 rootB
+}
+
 int main(int argc, char* argv[]) {
 
     int k = 7; // 节点数量
@@ -46,4 +61,22 @@ int main(int argc, char* argv[]) {
         cout << node << " ";
     }
     cout << endl;
+
+    // 使用递归版本构造DBT
+    vector<int> treeA_rec, treeB_rec;
+    buildDBT_recursive(k, rootA, treeA_rec, treeB_rec);
+    // 输出递归版本的Tree A
+    cout << "Tree A (recursive): ";
+    for (int node : treeA_rec) {
+        cout << node << " ";
+    }
+    cout << endl;
+    // 输出递归版本的Tree B
+    cout << "Tree B (recursive): ";
+    for (int node : treeB_rec) {
+        cout << node << " ";
+    }
+    cout << endl;
+    
+    return 0;
 }
